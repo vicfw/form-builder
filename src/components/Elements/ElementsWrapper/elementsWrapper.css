@@ -1,0 +1,14 @@
+.elements-wrapper {
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.elements-wrapper:hover {
+  background-color: white;
+  transition: all 0.5s ease;
+}
+.icons-wrapper {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}

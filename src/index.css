@@ -1,13 +1,67 @@
+@font-face {
+  font-family: Vazir-normal;
+  src: url("./public/fonts/eot/Vazir.eot");
+  src: url("./public/fonts/eot/Vazir.eot?#iefix") format("embedded-opentype"),
+    url("./public/fonts/woff2/Vazir.woff2") format("woff2"),
+    url("./public/fonts/woff/Vazir.woff") format("woff"),
+    url("./public/fonts/ttf/Vazir.ttf") format("truetype");
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: Vazir-bold;
+  src: url("./public/fonts/eot/Vazir-Bold.eot");
+  src: url("./public/fonts/eot/Vazir-Bold.eot?#iefix")
+      format("embedded-opentype"),
+    url("./public/fonts/woff2/Vazir-Bold.woff2") format("woff2"),
+    url("./public/fonts/woff/Vazir-Bold.woff") format("woff"),
+    url("./public/fonts/ttf/Vazir-Bold.ttf") format("truetype");
+  font-weight: bold;
+}
+
+@font-face {
+  font-family: Vazir-300;
+  src: url("./public/fonts/eot/Vazir-Light.eot");
+  src: url("./public/fonts/eot/Vazir-Light.eot?#iefix")
+      format("embedded-opentype"),
+    url("./public/fonts/woff2/Vazir-Light.woff2") format("woff2"),
+    url("./public/fonts/woff/Vazir-Light.woff") format("woff"),
+    url("./public/fonts/ttf/Vazir-Light.ttf") format("truetype");
+  font-weight: 300;
+}
+
+@font-face {
+  font-family: Vazir-500;
+  src: url("./public/fonts/eot/Vazir-Medium.eot");
+  src: url("./public/fonts/eot/Vazir-Medium.eot?#iefix")
+      format("embedded-opentype"),
+    url("./public/fonts/woff2/Vazir-Medium.woff2") format("woff2"),
+    url("./public/fonts/woff/Vazir-Medium.woff") format("woff"),
+    url("./public/fonts/ttf/Vazir-Medium.ttf") format("truetype");
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: Vazir-100;
+  src: url("./public/fonts/eot/Vazir-Thin.eot");
+  src: url("./public/fonts/eot/Vazir-Thin.eot?#iefix")
+      format("embedded-opentype"),
+    url("./public/fonts/woff2/Vazir-Thin.woff2") format("woff2"),
+    url("./public/fonts/woff/Vazir-Thin.woff") format("woff"),
+    url("./public/fonts/ttf/Vazir-Thin.ttf") format("truetype");
+  font-weight: 100;
+}
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: "Vazir-normal", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  direction: rtl;
+  overflow-x: hidden;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
