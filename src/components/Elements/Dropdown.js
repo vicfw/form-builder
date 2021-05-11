@@ -4,9 +4,7 @@ function Dropdown(props) {
   return (
     <>
       <label>{props.label}</label>
-      <select disabled className="form-control">
-        {props.children}
-      </select>
+      <select disabled className="form-control">{props.children}</select>
     </>
   );
 }

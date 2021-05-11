@@ -51,6 +51,13 @@ function SiderBar({ elementId, type, handleClose, showSideBar }) {
     setInputArr(newInputArr);
   };
 
+  const removeOptionInput = id => {
+    const removedArr = inputArr.filter(element => {
+      return element.inputId !== id;
+    });
+    setInputArr(removedArr);
+  };
+
   //render diffrent forms for diffrent elements
   const renderEditFrom = () => {
     if (type) {
@@ -149,7 +156,7 @@ function SiderBar({ elementId, type, handleClose, showSideBar }) {
                             <Button
                               className="mt-4"
                               variant="danger"
-                              onClick={generateOptionInput}
+                              onClick={() => removeOptionInput(item.inputId)}
                             >
                               حذف
                             </Button>
