@@ -1,0 +1,17 @@
+.row-wrapper {
+  padding: 30px;
+  margin-top: 20px;
+  border-radius: 10px;
+  background-color: #fff;
+  display: flex;
+  pointer-events: auto;
+}
+
+.box-1 {
+  margin: 0 20px;
+  height: auto;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

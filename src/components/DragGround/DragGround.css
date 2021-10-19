@@ -1,0 +1,7 @@
+.drag-ground {
+  height: 80px;
+  border: 2px dotted black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

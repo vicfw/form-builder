@@ -11,9 +11,9 @@ function ElementsWrapper({ id, handleRemove, children, handleEdit }) {
         <OverlayTrigger
           placement="bottom"
           delay={{ show: 250, hide: 400 }}
-          overlay={<Tooltip id={id}>خذف</Tooltip>}
+          overlay={<Tooltip id={id}>حذف</Tooltip>}
         >
-          <span onClick={handleRemove}>
+          <span onClick={handleRemove} style={{ cursor: "pointer" }}>
             <IoIosRemoveCircleOutline
               style={{ fontSize: "25px", marginLeft: "10px" }}
             />
@@ -24,7 +24,7 @@ function ElementsWrapper({ id, handleRemove, children, handleEdit }) {
           delay={{ show: 250, hide: 400 }}
           overlay={<Tooltip id={id}>ویرایش</Tooltip>}
         >
-          <span onClick={handleEdit}>
+          <span style={{ cursor: "pointer" }} onClick={handleEdit}>
             <BiCalendarEdit style={{ fontSize: "25px" }} />
           </span>
         </OverlayTrigger>

@@ -1,15 +1,24 @@
 import React from "react";
-import "./index.css";
 import ReactDOM from "react-dom";
+import "./index.css";
 import App from "./App";
-import { StateProvider } from "./Context/FormContext";
-import reducer, { initialState } from "./Context/reducer";
+import reportWebVitals from "./reportWebVitals";
+
+// Form Builder
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
+
+// Redux
+import { Provider } from "react-redux";
+import store from "./redux/store";
 
 ReactDOM.render(
-  <React.StrictMode>
-    <StateProvider initialState={initialState} reducer={reducer}>
+  <Provider store={store}>
+    <DndProvider backend={HTML5Backend}>
       <App />
-    </StateProvider>
-  </React.StrictMode>,
+    </DndProvider>
+  </Provider>,
   document.getElementById("root"),
 );
+
+reportWebVitals();

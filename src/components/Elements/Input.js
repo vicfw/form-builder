@@ -5,6 +5,7 @@ function Input(props) {
     <>
       <label htmlFor={props.id}>{props.label}</label>
       <input
+        readOnly
         disabled
         id={props.id}
         type={props.type}

@@ -1,10 +1,11 @@
 .box {
-  border: 1px #000 dotted;
-  width: 200px;
+  border: 1px rgb(201, 198, 198) dotted;
+  width: 250px;
   height: 40px;
   padding: 5px 10px;
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
   align-items: center;
   cursor: pointer;
+  margin-bottom: 10px;
 }
