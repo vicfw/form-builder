@@ -1,6 +1,15 @@
 import { create } from "zustand";
 
-export type InputType = "single-line" | "multiline";
+export type InputType =
+  | "single-line"
+  | "multiline"
+  | "password"
+  | "email"
+  | "number"
+  | "radio"
+  | "checkbox"
+  | "dropdown"
+  | "toggle";
 
 export interface BaseInputProperties {
   label: string;
@@ -17,9 +26,50 @@ export interface MultilineInputProperties extends BaseInputProperties {
   type: "multiline";
 }
 
+export interface PasswordInputProperties extends BaseInputProperties {
+  type: "password";
+}
+
+export interface EmailInputProperties extends BaseInputProperties {
+  type: "email";
+}
+
+export interface NumberInputProperties extends BaseInputProperties {
+  type: "number";
+}
+
+export interface RadioInputProperties extends BaseInputProperties {
+  type: "radio";
+  options: string[];
+}
+
+export interface CheckboxInputProperties extends BaseInputProperties {
+  type: "checkbox";
+  options: string[];
+}
+
+export interface DropdownInputProperties extends BaseInputProperties {
+  type: "dropdown";
+  options: string[];
+}
+
+export interface ToggleInputProperties extends BaseInputProperties {
+  type: "toggle";
+  label: string;
+  isRequired: boolean;
+  width: string;
+}
+
 export type InputProperties =
   | SingleLineInputProperties
-  | MultilineInputProperties;
+  | MultilineInputProperties
+  | PasswordInputProperties
+  | EmailInputProperties
+  | NumberInputProperties
+  | RadioInputProperties
+  | CheckboxInputProperties
+  | DropdownInputProperties
+  | ToggleInputProperties;
 
 interface FormElementsStore {
   selectedElement: InputType | null;
@@ -51,6 +101,65 @@ const defaultMultilineProperties: MultilineInputProperties = {
   width: "100%",
 };
 
+const defaultPasswordProperties: PasswordInputProperties = {
+  type: "password",
+  label: "Password",
+  placeholder: "Enter password...",
+  isRequired: false,
+  width: "100%",
+};
+
+const defaultEmailProperties: EmailInputProperties = {
+  type: "email",
+  label: "Email",
+  placeholder: "Enter email address...",
+  isRequired: false,
+  width: "100%",
+};
+
+const defaultNumberProperties: NumberInputProperties = {
+  type: "number",
+  label: "Number",
+  placeholder: "Enter number...",
+  isRequired: false,
+  width: "100%",
+};
+
+const defaultRadioProperties: RadioInputProperties = {
+  type: "radio",
+  label: "Radio Buttons",
+  placeholder: "",
+  isRequired: false,
+  width: "100%",
+  options: ["Option 1", "Option 2"],
+};
+
+const defaultCheckboxProperties: CheckboxInputProperties = {
+  type: "checkbox",
+  label: "Checkboxes",
+  placeholder: "",
+  isRequired: false,
+  width: "100%",
+  options: ["Option 1", "Option 2"],
+};
+
+const defaultDropdownProperties: DropdownInputProperties = {
+  type: "dropdown",
+  label: "Dropdown",
+  placeholder: "Select an option",
+  isRequired: false,
+  width: "100%",
+  options: ["Option 1", "Option 2"],
+};
+
+const defaultToggleProperties: ToggleInputProperties = {
+  type: "toggle",
+  label: "Toggle Switch",
+  placeholder: "",
+  isRequired: false,
+  width: "100%",
+};
+
 export const useFormElementsStore = create<FormElementsStore>((set, get) => ({
   selectedElement: null,
   properties: null,
@@ -60,7 +169,21 @@ export const useFormElementsStore = create<FormElementsStore>((set, get) => ({
     const newProperties =
       type === "single-line"
         ? defaultSingleLineProperties
-        : defaultMultilineProperties;
+        : type === "multiline"
+        ? defaultMultilineProperties
+        : type === "password"
+        ? defaultPasswordProperties
+        : type === "email"
+        ? defaultEmailProperties
+        : type === "number"
+        ? defaultNumberProperties
+        : type === "radio"
+        ? defaultRadioProperties
+        : type === "checkbox"
+        ? defaultCheckboxProperties
+        : type === "dropdown"
+        ? defaultDropdownProperties
+        : defaultToggleProperties;
     console.log("Setting new properties:", newProperties);
     set((state) => {
       console.log("Previous state:", state);
@@ -128,7 +251,21 @@ export const useFormElementsStore = create<FormElementsStore>((set, get) => ({
     const newProperties =
       type === "single-line"
         ? defaultSingleLineProperties
-        : defaultMultilineProperties;
+        : type === "multiline"
+        ? defaultMultilineProperties
+        : type === "password"
+        ? defaultPasswordProperties
+        : type === "email"
+        ? defaultEmailProperties
+        : type === "number"
+        ? defaultNumberProperties
+        : type === "radio"
+        ? defaultRadioProperties
+        : type === "checkbox"
+        ? defaultCheckboxProperties
+        : type === "dropdown"
+        ? defaultDropdownProperties
+        : defaultToggleProperties;
     set((state) => ({
       formElements: [...state.formElements, newProperties],
     }));

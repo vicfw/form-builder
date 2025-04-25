@@ -1,11 +1,12 @@
 "use client";
 import { useFormElementsStore } from "@/lib/store/form-elements-store";
-import { ChevronDownIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import {
   AlignJustify,
   AlignLeft,
   Calendar,
   CheckSquare,
+  ChevronDownIcon,
+  ChevronRightIcon,
   CircleDot,
   Clock,
   Edit3,
@@ -47,17 +48,35 @@ export default function FormElementsSidebar({
   expandedSections,
   toggleSection,
 }: FormElementsSidebarProps) {
-  const setSelectedElement = useFormElementsStore(
-    (state) => state.setSelectedElement
-  );
+  const { setSelectedElement } = useFormElementsStore();
 
-  const handleElementClick = (type: "single-line" | "multiline") => {
+  const handleElementClick = (
+    type:
+      | "single-line"
+      | "multiline"
+      | "password"
+      | "email"
+      | "number"
+      | "radio"
+      | "checkbox"
+      | "dropdown"
+      | "toggle"
+  ) => {
     setSelectedElement(type);
   };
 
   const handleDragStart = (
     e: React.DragEvent,
-    type: "single-line" | "multiline"
+    type:
+      | "single-line"
+      | "multiline"
+      | "password"
+      | "email"
+      | "number"
+      | "radio"
+      | "checkbox"
+      | "dropdown"
+      | "toggle"
   ) => {
     e.dataTransfer.setData("text/plain", type);
   };
@@ -101,15 +120,30 @@ export default function FormElementsSidebar({
                       <AlignLeft className="w-4 h-4 mr-2" />
                       <span>Multiline text area</span>
                     </div>
-                    <div className="flex items-center text-sm text-[#475467]">
+                    <div
+                      draggable
+                      onDragStart={(e) => handleDragStart(e, "password")}
+                      className="flex items-center text-sm text-[#475467] cursor-pointer hover:bg-gray-100 p-2 rounded-md"
+                      onClick={() => handleElementClick("password")}
+                    >
                       <Lock className="w-4 h-4 mr-2" />
                       <span>Password field</span>
                     </div>
-                    <div className="flex items-center text-sm text-[#475467]">
+                    <div
+                      draggable
+                      onDragStart={(e) => handleDragStart(e, "email")}
+                      className="flex items-center text-sm text-[#475467] cursor-pointer hover:bg-gray-100 p-2 rounded-md"
+                      onClick={() => handleElementClick("email")}
+                    >
                       <Mail className="w-4 h-4 mr-2" />
                       <span>Email field</span>
                     </div>
-                    <div className="flex items-center text-sm text-[#475467]">
+                    <div
+                      draggable
+                      onDragStart={(e) => handleDragStart(e, "number")}
+                      className="flex items-center text-sm text-[#475467] cursor-pointer hover:bg-gray-100 p-2 rounded-md"
+                      onClick={() => handleElementClick("number")}
+                    >
                       <Hash className="w-4 h-4 mr-2" />
                       <span>Number field</span>
                     </div>
@@ -117,19 +151,39 @@ export default function FormElementsSidebar({
                 )}
                 {section === "Choice Controls" && (
                   <>
-                    <div className="flex items-center text-sm text-[#475467]">
+                    <div
+                      draggable
+                      onDragStart={(e) => handleDragStart(e, "radio")}
+                      className="flex items-center text-sm text-[#475467] cursor-pointer hover:bg-gray-100 p-2 rounded-md"
+                      onClick={() => handleElementClick("radio")}
+                    >
                       <CircleDot className="w-4 h-4 mr-2" />
                       <span>Radio buttons</span>
                     </div>
-                    <div className="flex items-center text-sm text-[#475467]">
+                    <div
+                      draggable
+                      onDragStart={(e) => handleDragStart(e, "checkbox")}
+                      className="flex items-center text-sm text-[#475467] cursor-pointer hover:bg-gray-100 p-2 rounded-md"
+                      onClick={() => handleElementClick("checkbox")}
+                    >
                       <CheckSquare className="w-4 h-4 mr-2" />
                       <span>Checkboxes</span>
                     </div>
-                    <div className="flex items-center text-sm text-[#475467]">
+                    <div
+                      draggable
+                      onDragStart={(e) => handleDragStart(e, "dropdown")}
+                      className="flex items-center text-sm text-[#475467] cursor-pointer hover:bg-gray-100 p-2 rounded-md"
+                      onClick={() => handleElementClick("dropdown")}
+                    >
                       <List className="w-4 h-4 mr-2" />
                       <span>Dropdown list</span>
                     </div>
-                    <div className="flex items-center text-sm text-[#475467]">
+                    <div
+                      draggable
+                      onDragStart={(e) => handleDragStart(e, "toggle")}
+                      className="flex items-center text-sm text-[#475467] cursor-pointer hover:bg-gray-100 p-2 rounded-md"
+                      onClick={() => handleElementClick("toggle")}
+                    >
                       <ToggleLeft className="w-4 h-4 mr-2" />
                       <span>Toggle switch</span>
                     </div>
