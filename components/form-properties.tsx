@@ -27,7 +27,7 @@ export default function FormProperties() {
 
   if (!properties || !localProperties) {
     return (
-      <div className="w-64 border-l border-[#e9eaeb] bg-white">
+      <div className="w-full border-l border-[#e9eaeb] bg-white">
         <div className="p-4 border-b border-[#e9eaeb] flex items-center justify-between">
           <span className="font-medium text-[#181d27]">Properties</span>
         </div>
@@ -207,7 +207,7 @@ export default function FormProperties() {
   };
 
   return (
-    <div className="w-64 border-l border-[#e9eaeb] bg-white">
+    <div className="w-full border-l border-[#e9eaeb] bg-white">
       <div className="p-4 border-b border-[#e9eaeb] flex items-center justify-between">
         <span className="font-medium text-[#181d27]">Properties</span>
         <button

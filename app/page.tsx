@@ -34,7 +34,7 @@ export default function FormBuilder() {
 
   return (
     <div className="h-[100dvh] w-full bg-[#fafafa]">
-      <div className="grid grid-cols-[260px_1fr_260px] h-full">
+      <div className="grid grid-cols-[260px_1fr_300px] h-full">
         <FormElementsSidebar
           expandedSections={expandedSections}
           toggleSection={toggleSection}
