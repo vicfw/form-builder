@@ -33,14 +33,12 @@ export default function FormBuilder() {
   };
 
   return (
-    <div className="h-[100dvh] w-full p-4 bg-white">
-      <div className="grid grid-cols-[250px_1fr_250px] h-full gap-4">
-        <div className="space-y-4">
-          <FormElementsSidebar
-            expandedSections={expandedSections}
-            toggleSection={toggleSection}
-          />
-        </div>
+    <div className="h-[100dvh] w-full bg-[#fafafa]">
+      <div className="grid grid-cols-[260px_1fr_260px] h-full">
+        <FormElementsSidebar
+          expandedSections={expandedSections}
+          toggleSection={toggleSection}
+        />
         <FormPreview />
         <FormProperties />
       </div>

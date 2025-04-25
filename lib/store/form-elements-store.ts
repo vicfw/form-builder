@@ -1,273 +1,285 @@
 import { create } from "zustand";
 
-export type InputType =
-  | "single-line"
-  | "multiline"
-  | "password"
-  | "email"
-  | "number"
-  | "radio"
-  | "checkbox"
-  | "dropdown"
-  | "toggle";
-
-export interface BaseInputProperties {
+export interface InputProperties {
+  type:
+    | "single-line"
+    | "multiline"
+    | "password"
+    | "email"
+    | "number"
+    | "radio"
+    | "checkbox"
+    | "dropdown"
+    | "toggle";
   label: string;
   placeholder: string;
+  width: "100%" | "75%" | "50%" | "25%";
   isRequired: boolean;
-  width: string;
+  options?: string[];
 }
 
-export interface SingleLineInputProperties extends BaseInputProperties {
-  type: "single-line";
-}
-
-export interface MultilineInputProperties extends BaseInputProperties {
-  type: "multiline";
-}
-
-export interface PasswordInputProperties extends BaseInputProperties {
-  type: "password";
-}
-
-export interface EmailInputProperties extends BaseInputProperties {
-  type: "email";
-}
-
-export interface NumberInputProperties extends BaseInputProperties {
-  type: "number";
-}
-
-export interface RadioInputProperties extends BaseInputProperties {
+export interface RadioInputProperties extends InputProperties {
   type: "radio";
   options: string[];
 }
 
-export interface CheckboxInputProperties extends BaseInputProperties {
+export interface CheckboxInputProperties extends InputProperties {
   type: "checkbox";
   options: string[];
 }
 
-export interface DropdownInputProperties extends BaseInputProperties {
+export interface DropdownInputProperties extends InputProperties {
   type: "dropdown";
   options: string[];
 }
 
-export interface ToggleInputProperties extends BaseInputProperties {
+export interface ToggleInputProperties extends InputProperties {
   type: "toggle";
-  label: string;
-  isRequired: boolean;
-  width: string;
 }
 
-export type InputProperties =
-  | SingleLineInputProperties
-  | MultilineInputProperties
-  | PasswordInputProperties
-  | EmailInputProperties
-  | NumberInputProperties
-  | RadioInputProperties
-  | CheckboxInputProperties
-  | DropdownInputProperties
-  | ToggleInputProperties;
-
 interface FormElementsStore {
-  selectedElement: InputType | null;
   properties: InputProperties | null;
   formElements: InputProperties[];
-  setSelectedElement: (type: InputType) => void;
-  setProperties: (properties: Partial<InputProperties>) => void;
+  selectedElement:
+    | "single-line"
+    | "multiline"
+    | "password"
+    | "email"
+    | "number"
+    | "radio"
+    | "checkbox"
+    | "dropdown"
+    | "toggle"
+    | null;
+  setProperties: (properties: InputProperties) => void;
   addFormElement: () => void;
+  setSelectedElement: (
+    type:
+      | "single-line"
+      | "multiline"
+      | "password"
+      | "email"
+      | "number"
+      | "radio"
+      | "checkbox"
+      | "dropdown"
+      | "toggle"
+  ) => void;
   clearSelectedElement: () => void;
   saveToLocalStorage: () => void;
   loadFromLocalStorage: () => void;
   clearLocalStorage: () => void;
-  addElementByType: (type: InputType) => void;
+  addElementByType: (
+    type:
+      | "single-line"
+      | "multiline"
+      | "password"
+      | "email"
+      | "number"
+      | "radio"
+      | "checkbox"
+      | "dropdown"
+      | "toggle"
+  ) => void;
 }
 
-const defaultSingleLineProperties: SingleLineInputProperties = {
-  type: "single-line",
-  label: "Text Input",
-  placeholder: "Enter text here...",
-  isRequired: false,
-  width: "100%",
-};
-
-const defaultMultilineProperties: MultilineInputProperties = {
-  type: "multiline",
-  label: "Text Area",
-  placeholder: "Enter text here...",
-  isRequired: false,
-  width: "100%",
-};
-
-const defaultPasswordProperties: PasswordInputProperties = {
-  type: "password",
-  label: "Password",
-  placeholder: "Enter password...",
-  isRequired: false,
-  width: "100%",
-};
-
-const defaultEmailProperties: EmailInputProperties = {
-  type: "email",
-  label: "Email",
-  placeholder: "Enter email address...",
-  isRequired: false,
-  width: "100%",
-};
-
-const defaultNumberProperties: NumberInputProperties = {
-  type: "number",
-  label: "Number",
-  placeholder: "Enter number...",
-  isRequired: false,
-  width: "100%",
-};
-
-const defaultRadioProperties: RadioInputProperties = {
-  type: "radio",
-  label: "Radio Buttons",
-  placeholder: "",
-  isRequired: false,
-  width: "100%",
-  options: ["Option 1", "Option 2"],
-};
-
-const defaultCheckboxProperties: CheckboxInputProperties = {
-  type: "checkbox",
-  label: "Checkboxes",
-  placeholder: "",
-  isRequired: false,
-  width: "100%",
-  options: ["Option 1", "Option 2"],
-};
-
-const defaultDropdownProperties: DropdownInputProperties = {
-  type: "dropdown",
-  label: "Dropdown",
-  placeholder: "Select an option",
-  isRequired: false,
-  width: "100%",
-  options: ["Option 1", "Option 2"],
-};
-
-const defaultToggleProperties: ToggleInputProperties = {
-  type: "toggle",
-  label: "Toggle Switch",
-  placeholder: "",
-  isRequired: false,
-  width: "100%",
-};
-
 export const useFormElementsStore = create<FormElementsStore>((set, get) => ({
-  selectedElement: null,
   properties: null,
   formElements: [],
-  setSelectedElement: (type) => {
-    console.log("Setting selected element:", type);
-    const newProperties =
-      type === "single-line"
-        ? defaultSingleLineProperties
-        : type === "multiline"
-        ? defaultMultilineProperties
-        : type === "password"
-        ? defaultPasswordProperties
-        : type === "email"
-        ? defaultEmailProperties
-        : type === "number"
-        ? defaultNumberProperties
-        : type === "radio"
-        ? defaultRadioProperties
-        : type === "checkbox"
-        ? defaultCheckboxProperties
-        : type === "dropdown"
-        ? defaultDropdownProperties
-        : defaultToggleProperties;
-    console.log("Setting new properties:", newProperties);
-    set((state) => {
-      console.log("Previous state:", state);
-      return {
-        selectedElement: type,
-        properties: newProperties,
-      };
-    });
-  },
-  setProperties: (newProperties) => {
-    console.log("Updating properties:", newProperties);
-    set((state) => {
-      console.log("Previous state:", state);
-      if (!state.properties) {
-        console.log("No existing properties, returning state unchanged");
-        return state;
-      }
-      const updatedProperties = {
-        ...state.properties,
-        ...newProperties,
-      } as InputProperties;
-      console.log("Updated properties:", updatedProperties);
-      return {
-        properties: updatedProperties,
-      };
-    });
-  },
+  selectedElement: null,
+  setProperties: (properties) => set({ properties }),
   addFormElement: () => {
-    set((state) => {
-      if (!state.properties) return state;
-      return {
-        formElements: [...state.formElements, state.properties],
+    const properties = get().properties;
+    if (properties) {
+      set((state) => ({
+        formElements: [...state.formElements, properties],
         properties: null,
         selectedElement: null,
+      }));
+    }
+  },
+  setSelectedElement: (type) => {
+    let defaultProperties: InputProperties | null = null;
+
+    if (type === "single-line") {
+      defaultProperties = {
+        type: "single-line",
+        label: "Single-line Text Input",
+        placeholder: "Enter text here",
+        width: "100%",
+        isRequired: false,
       };
-    });
+    } else if (type === "multiline") {
+      defaultProperties = {
+        type: "multiline",
+        label: "Multiline Text Area",
+        placeholder: "Enter text here",
+        width: "100%",
+        isRequired: false,
+      };
+    } else if (type === "password") {
+      defaultProperties = {
+        type: "password",
+        label: "Password Field",
+        placeholder: "Enter password here",
+        width: "100%",
+        isRequired: false,
+      };
+    } else if (type === "email") {
+      defaultProperties = {
+        type: "email",
+        label: "Email Field",
+        placeholder: "Enter email here",
+        width: "100%",
+        isRequired: false,
+      };
+    } else if (type === "number") {
+      defaultProperties = {
+        type: "number",
+        label: "Number Field",
+        placeholder: "Enter number here",
+        width: "100%",
+        isRequired: false,
+      };
+    } else if (type === "radio") {
+      defaultProperties = {
+        type: "radio",
+        label: "Radio Buttons",
+        placeholder: "",
+        width: "100%",
+        isRequired: false,
+        options: ["Option 1", "Option 2"],
+      };
+    } else if (type === "checkbox") {
+      defaultProperties = {
+        type: "checkbox",
+        label: "Checkboxes",
+        placeholder: "",
+        width: "100%",
+        isRequired: false,
+        options: ["Option 1", "Option 2"],
+      };
+    } else if (type === "dropdown") {
+      defaultProperties = {
+        type: "dropdown",
+        label: "Dropdown List",
+        placeholder: "Select an option",
+        width: "100%",
+        isRequired: false,
+        options: ["Option 1", "Option 2"],
+      };
+    } else if (type === "toggle") {
+      defaultProperties = {
+        type: "toggle",
+        label: "Toggle Switch",
+        placeholder: "",
+        width: "100%",
+        isRequired: false,
+      };
+    }
+
+    if (defaultProperties) {
+      set({ properties: defaultProperties, selectedElement: type });
+    }
   },
-  clearSelectedElement: () => {
-    set((state) => ({
-      selectedElement: null,
-      properties: null,
-    }));
-  },
+  clearSelectedElement: () => set({ properties: null, selectedElement: null }),
   saveToLocalStorage: () => {
-    const state = get();
-    localStorage.setItem(
-      "form-builder-data",
-      JSON.stringify({
-        formElements: state.formElements,
-      })
-    );
+    localStorage.setItem("formElements", JSON.stringify(get().formElements));
   },
   loadFromLocalStorage: () => {
-    const savedData = localStorage.getItem("form-builder-data");
-    if (savedData) {
-      const { formElements } = JSON.parse(savedData);
-      set({ formElements });
+    const formElements = localStorage.getItem("formElements");
+    if (formElements) {
+      set({ formElements: JSON.parse(formElements) });
     }
   },
   clearLocalStorage: () => {
-    localStorage.removeItem("form-builder-data");
+    localStorage.removeItem("formElements");
     set({ formElements: [] });
   },
-  addElementByType: (type: InputType) => {
-    const newProperties =
-      type === "single-line"
-        ? defaultSingleLineProperties
-        : type === "multiline"
-        ? defaultMultilineProperties
-        : type === "password"
-        ? defaultPasswordProperties
-        : type === "email"
-        ? defaultEmailProperties
-        : type === "number"
-        ? defaultNumberProperties
-        : type === "radio"
-        ? defaultRadioProperties
-        : type === "checkbox"
-        ? defaultCheckboxProperties
-        : type === "dropdown"
-        ? defaultDropdownProperties
-        : defaultToggleProperties;
-    set((state) => ({
-      formElements: [...state.formElements, newProperties],
-    }));
+  addElementByType: (type) => {
+    let defaultProperties: InputProperties | null = null;
+
+    if (type === "single-line") {
+      defaultProperties = {
+        type: "single-line",
+        label: "Single-line Text Input",
+        placeholder: "Enter text here",
+        width: "100%",
+        isRequired: false,
+      };
+    } else if (type === "multiline") {
+      defaultProperties = {
+        type: "multiline",
+        label: "Multiline Text Area",
+        placeholder: "Enter text here",
+        width: "100%",
+        isRequired: false,
+      };
+    } else if (type === "password") {
+      defaultProperties = {
+        type: "password",
+        label: "Password Field",
+        placeholder: "Enter password here",
+        width: "100%",
+        isRequired: false,
+      };
+    } else if (type === "email") {
+      defaultProperties = {
+        type: "email",
+        label: "Email Field",
+        placeholder: "Enter email here",
+        width: "100%",
+        isRequired: false,
+      };
+    } else if (type === "number") {
+      defaultProperties = {
+        type: "number",
+        label: "Number Field",
+        placeholder: "Enter number here",
+        width: "100%",
+        isRequired: false,
+      };
+    } else if (type === "radio") {
+      defaultProperties = {
+        type: "radio",
+        label: "Radio Buttons",
+        placeholder: "",
+        width: "100%",
+        isRequired: false,
+        options: ["Option 1", "Option 2"],
+      };
+    } else if (type === "checkbox") {
+      defaultProperties = {
+        type: "checkbox",
+        label: "Checkboxes",
+        placeholder: "",
+        width: "100%",
+        isRequired: false,
+        options: ["Option 1", "Option 2"],
+      };
+    } else if (type === "dropdown") {
+      defaultProperties = {
+        type: "dropdown",
+        label: "Dropdown List",
+        placeholder: "Select an option",
+        width: "100%",
+        isRequired: false,
+        options: ["Option 1", "Option 2"],
+      };
+    } else if (type === "toggle") {
+      defaultProperties = {
+        type: "toggle",
+        label: "Toggle Switch",
+        placeholder: "",
+        width: "100%",
+        isRequired: false,
+      };
+    }
+
+    if (defaultProperties) {
+      set((state) => ({
+        formElements: [...state.formElements, defaultProperties],
+      }));
+    }
   },
 }));
