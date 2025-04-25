@@ -1,35 +1,33 @@
 "use client";
+import { useFormElementsStore } from "@/lib/store/form-elements-store";
 import { ChevronDownIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import {
-  TextIcon,
+  AlignJustify,
   AlignLeft,
+  Calendar,
+  CheckSquare,
+  CircleDot,
+  Clock,
+  Edit3,
+  FileText,
+  Grid,
+  Hash,
+  Heading,
+  HelpCircle,
+  ImageIcon,
+  List,
   Lock,
   Mail,
-  Hash,
-  CircleDot,
-  CheckSquare,
-  List,
-  ToggleLeft,
-  Calendar,
-  Clock,
-  FileText,
-  ImageIcon,
-  Edit3,
-  Heading,
-  AlignJustify,
   Minus,
-  Send,
-  RotateCcw,
   Navigation,
-  Sliders,
-  Tag,
-  HelpCircle,
-  Grid,
+  RotateCcw,
+  Send,
   Settings,
+  Tag,
+  TextIcon,
+  ToggleLeft,
   User,
 } from "lucide-react";
-import { useFormElementsStore } from "@/lib/store/form-elements-store";
-import { IconName } from "@heroicons/react/24/outline";
 
 type SectionKey =
   | "Basic Input Fields"
@@ -57,6 +55,13 @@ export default function FormElementsSidebar({
     setSelectedElement(type);
   };
 
+  const handleDragStart = (
+    e: React.DragEvent,
+    type: "single-line" | "multiline"
+  ) => {
+    e.dataTransfer.setData("text/plain", type);
+  };
+
   return (
     <div className="bg-white rounded-lg border border-[#e9eaeb] p-4">
       <h2 className="text-lg font-medium text-gray-900 mb-4">Form Elements</h2>
@@ -79,6 +84,8 @@ export default function FormElementsSidebar({
                 {section === "Basic Input Fields" && (
                   <>
                     <div
+                      draggable
+                      onDragStart={(e) => handleDragStart(e, "single-line")}
                       className="flex items-center text-sm text-[#475467] cursor-pointer hover:bg-gray-100 p-2 rounded-md"
                       onClick={() => handleElementClick("single-line")}
                     >
@@ -86,6 +93,8 @@ export default function FormElementsSidebar({
                       <span>Single-line text input</span>
                     </div>
                     <div
+                      draggable
+                      onDragStart={(e) => handleDragStart(e, "multiline")}
                       className="flex items-center text-sm text-[#475467] cursor-pointer hover:bg-gray-100 p-2 rounded-md"
                       onClick={() => handleElementClick("multiline")}
                     >

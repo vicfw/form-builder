@@ -12,42 +12,54 @@ export default function FormPreview() {
     loadFromLocalStorage,
     addElementByType,
   } = useFormElementsStore();
-  const dropZoneRef = useRef<HTMLDivElement>(null);
+  const dropZone1Ref = useRef<HTMLDivElement>(null);
+  const dropZone2Ref = useRef<HTMLDivElement>(null);
+  const itemsContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     loadFromLocalStorage();
   }, []);
 
-  const handleDragStart = (
+  // Scroll to bottom when form elements change
+  useEffect(() => {
+    if (itemsContainerRef.current) {
+      itemsContainerRef.current.scrollTop =
+        itemsContainerRef.current.scrollHeight;
+    }
+  }, [formElements]);
+
+  const handleDragOver = (
     e: React.DragEvent,
-    type: "single-line" | "multiline"
+    ref: React.RefObject<HTMLDivElement | null>
   ) => {
-    e.dataTransfer.setData("text/plain", type);
-  };
-
-  const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
-    if (dropZoneRef.current) {
-      dropZoneRef.current.classList.add("border-blue-500", "bg-blue-50");
+    if (ref.current) {
+      ref.current.classList.add("border-blue-500", "bg-blue-50");
     }
   };
 
-  const handleDragLeave = (e: React.DragEvent) => {
+  const handleDragLeave = (
+    e: React.DragEvent,
+    ref: React.RefObject<HTMLDivElement | null>
+  ) => {
     e.preventDefault();
-    if (dropZoneRef.current) {
-      dropZoneRef.current.classList.remove("border-blue-500", "bg-blue-50");
+    if (ref.current) {
+      ref.current.classList.remove("border-blue-500", "bg-blue-50");
     }
   };
 
-  const handleDrop = (e: React.DragEvent) => {
+  const handleDrop = (
+    e: React.DragEvent,
+    ref: React.RefObject<HTMLDivElement | null>
+  ) => {
     e.preventDefault();
-    if (dropZoneRef.current) {
-      dropZoneRef.current.classList.remove("border-blue-500", "bg-blue-50");
+    if (ref.current) {
+      ref.current.classList.remove("border-blue-500", "bg-blue-50");
     }
-    const type = e.dataTransfer.getData("text/plain") as
-      | "single-line"
-      | "multiline";
-    addElementByType(type);
+    const type = e.dataTransfer.getData("text/plain");
+    if (type === "single-line" || type === "multiline") {
+      addElementByType(type);
+    }
   };
 
   const renderFormElement = (element: typeof properties) => {
@@ -112,25 +124,28 @@ export default function FormPreview() {
   };
 
   return (
-    <div className="flex-1 border-r border-[#e9eaeb] p-4 overflow-y-auto">
-      <div className="space-y-6">
-        {/* Action Buttons */}
-        <div className="flex justify-end space-x-2">
-          <button
-            onClick={handleCancel}
-            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-          >
-            Cancel
-          </button>
-          <button
-            onClick={handleSave}
-            className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-          >
-            Save
-          </button>
-        </div>
+    <div className="flex-1 border-r border-[#e9eaeb] p-4 flex flex-col h-full">
+      {/* Action Buttons */}
+      <div className="flex justify-end space-x-2 mb-4">
+        <button
+          onClick={handleCancel}
+          className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+        >
+          Cancel
+        </button>
+        <button
+          onClick={handleSave}
+          className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+        >
+          Save
+        </button>
+      </div>
 
-        {/* Form Elements List */}
+      {/* Scrollable Form Items Container */}
+      <div
+        ref={itemsContainerRef}
+        className="h-[calc(100vh-250px)] overflow-y-auto"
+      >
         {formElements.length > 0 && (
           <div className="border border-[#e9eaeb] rounded-md p-8">
             <div className="space-y-6">
@@ -145,27 +160,27 @@ export default function FormPreview() {
             </div>
           </div>
         )}
+      </div>
 
-        {/* Drag and Drop Section */}
-        <div className="grid grid-cols-2 gap-4 mt-6">
-          <div
-            ref={dropZoneRef}
-            onDragOver={handleDragOver}
-            onDragLeave={handleDragLeave}
-            onDrop={handleDrop}
-            className="border border-dashed border-[#e9eaeb] rounded-md p-8 flex items-center justify-center text-[#717680] transition-colors duration-200"
-          >
-            Drop zone 1
-          </div>
-          <div
-            ref={dropZoneRef}
-            onDragOver={handleDragOver}
-            onDragLeave={handleDragLeave}
-            onDrop={handleDrop}
-            className="border border-dashed border-[#e9eaeb] rounded-md p-8 flex items-center justify-center text-[#717680] transition-colors duration-200"
-          >
-            Drop zone 2
-          </div>
+      {/* Fixed Drop Zones */}
+      <div className="grid grid-cols-2 gap-4 mt-4">
+        <div
+          ref={dropZone1Ref}
+          onDragOver={(e) => handleDragOver(e, dropZone1Ref)}
+          onDragLeave={(e) => handleDragLeave(e, dropZone1Ref)}
+          onDrop={(e) => handleDrop(e, dropZone1Ref)}
+          className="border border-dashed border-[#e9eaeb] rounded-md p-8 flex items-center justify-center text-[#717680] transition-colors duration-200"
+        >
+          Drop zone 1
+        </div>
+        <div
+          ref={dropZone2Ref}
+          onDragOver={(e) => handleDragOver(e, dropZone2Ref)}
+          onDragLeave={(e) => handleDragLeave(e, dropZone2Ref)}
+          onDrop={(e) => handleDrop(e, dropZone2Ref)}
+          className="border border-dashed border-[#e9eaeb] rounded-md p-8 flex items-center justify-center text-[#717680] transition-colors duration-200"
+        >
+          Drop zone 2
         </div>
       </div>
     </div>
