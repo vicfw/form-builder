@@ -2,11 +2,15 @@
 
 import type React from "react";
 
-import { useFormElementsStore } from "@/lib/store/form-elements-store";
+import {
+  useFormElementsStore,
+  FileUploadProperties,
+} from "@/lib/store/form-elements-store";
 import { useEffect, useRef } from "react";
 import { ChevronDown } from "lucide-react";
 import DatePickerField from "@/components/form-elements/date-picker-field";
 import TimePickerField from "@/components/form-elements/time-picker-field";
+import FileUploadField from "@/components/form-elements/file-upload-field";
 
 export default function FormPreview() {
   const {
@@ -72,7 +76,8 @@ export default function FormPreview() {
       type === "dropdown" ||
       type === "toggle" ||
       type === "date-picker" ||
-      type === "time-picker"
+      type === "time-picker" ||
+      type === "file-upload"
     ) {
       addElementByType(type);
     }
@@ -280,6 +285,14 @@ export default function FormPreview() {
         return <DatePickerField key={id} properties={element} id={id} />;
       case "time-picker":
         return <TimePickerField key={id} properties={element} id={id} />;
+      case "file-upload":
+        return (
+          <FileUploadField
+            key={id}
+            properties={element as FileUploadProperties}
+            id={id}
+          />
+        );
       default:
         return null;
     }

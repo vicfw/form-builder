@@ -57,6 +57,10 @@ export interface InputProperties {
     minute: string;
     period: "AM" | "PM";
   };
+  // File upload properties
+  acceptedFileTypes?: string[];
+  maxFileSize?: number; // in bytes
+  multiple?: boolean;
 }
 
 export interface RadioInputProperties extends InputProperties {
@@ -76,6 +80,13 @@ export interface DropdownInputProperties extends InputProperties {
 
 export interface ToggleInputProperties extends InputProperties {
   type: "toggle";
+}
+
+export interface FileUploadProperties extends InputProperties {
+  type: "file-upload";
+  acceptedFileTypes: string[];
+  maxFileSize: number;
+  multiple: boolean;
 }
 
 interface FormElementsStore {
@@ -285,9 +296,17 @@ export const useFormElementsStore = create<FormElementsStore>((set, get) => ({
       defaultProperties = {
         type: "file-upload",
         label: "File Upload",
-        placeholder: "Upload file",
+        placeholder: "Drop file here or click to upload",
         width: "100%",
         isRequired: false,
+        acceptedFileTypes: [
+          "application/pdf",
+          "application/msword",
+          "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+          "text/plain",
+        ],
+        maxFileSize: 5 * 1024 * 1024, // 5MB
+        multiple: false,
       };
     } else if (type === "image-upload") {
       defaultProperties = {
@@ -495,9 +514,17 @@ export const useFormElementsStore = create<FormElementsStore>((set, get) => ({
       defaultProperties = {
         type: "file-upload",
         label: "File Upload",
-        placeholder: "Upload file",
+        placeholder: "Drop file here or click to upload",
         width: "100%",
         isRequired: false,
+        acceptedFileTypes: [
+          "application/pdf",
+          "application/msword",
+          "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+          "text/plain",
+        ],
+        maxFileSize: 5 * 1024 * 1024, // 5MB
+        multiple: false,
       };
     } else if (type === "image-upload") {
       defaultProperties = {
