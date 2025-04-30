@@ -33,7 +33,7 @@ export default function FormBuilder() {
   };
 
   return (
-    <div className="h-[100dvh] w-full bg-[#fafafa]">
+    <div className="h-[calc(100dvh-65px)] w-full bg-background">
       <div className="grid grid-cols-[260px_1fr_300px] h-full">
         <FormElementsSidebar
           expandedSections={expandedSections}

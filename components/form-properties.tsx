@@ -2,12 +2,22 @@
 
 import type React from "react";
 
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   type InputProperties,
   useFormElementsStore,
 } from "@/lib/store/form-elements-store";
-import { useState, useEffect } from "react";
-import { ChevronDown, X } from "lucide-react";
+import { X } from "lucide-react";
+import { useEffect, useState } from "react";
 
 export default function FormProperties() {
   const store = useFormElementsStore();
@@ -27,34 +37,18 @@ export default function FormProperties() {
 
   if (!properties || !localProperties) {
     return (
-      <div className="w-full border-l border-[#e9eaeb] bg-white">
-        <div className="p-4 border-b border-[#e9eaeb] flex items-center justify-between">
-          <span className="font-medium text-[#181d27]">Properties</span>
+      <div className="w-full border-l border-border bg-background">
+        <div className="p-4 border-b border-border flex items-center justify-between">
+          <span className="font-medium text-foreground">Properties</span>
         </div>
         <div className="p-4">
-          <div className="text-sm text-[#717680]">
+          <div className="text-sm text-muted-foreground">
             Select an element to edit its properties
           </div>
         </div>
       </div>
     );
   }
-
-  const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
-  ) => {
-    const { name, value, type } = e.target;
-    setLocalProperties((prev) => {
-      if (!prev) return null;
-      return {
-        ...prev,
-        [name]:
-          type === "checkbox" ? (e.target as HTMLInputElement).checked : value,
-      };
-    });
-  };
 
   const handleSave = () => {
     if (localProperties) {
@@ -67,168 +61,489 @@ export default function FormProperties() {
     clearSelectedElement();
   };
 
-  const renderPropertiesForm = () => {
-    return (
-      <div className="space-y-6">
-        <div className="space-y-1">
-          <label className="block text-sm font-medium text-[#344054]">
-            Label
-          </label>
-          <input
-            type="text"
-            name="label"
-            value={localProperties.label}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border border-[#e9eaeb] rounded-md focus:outline-none focus:ring-2 focus:ring-[#e3f6f1] focus:border-[#3e9e86]"
-          />
-        </div>
+  const renderProperties = () => {
+    if (!properties) return null;
 
-        {(localProperties.type === "single-line" ||
-          localProperties.type === "multiline" ||
-          localProperties.type === "password" ||
-          localProperties.type === "email" ||
-          localProperties.type === "number" ||
-          localProperties.type === "dropdown") && (
-          <div className="space-y-1">
-            <label className="block text-sm font-medium text-[#344054]">
-              Placeholder
-            </label>
-            <input
-              type="text"
-              name="placeholder"
-              value={localProperties.placeholder}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border border-[#e9eaeb] rounded-md focus:outline-none focus:ring-2 focus:ring-[#e3f6f1] focus:border-[#3e9e86]"
-            />
-          </div>
-        )}
-
-        {(localProperties.type === "radio" ||
-          localProperties.type === "checkbox" ||
-          localProperties.type === "dropdown") && (
-          <div className="space-y-1">
-            <label className="block text-sm font-medium text-[#344054]">
-              Options
-            </label>
+    switch (properties.type) {
+      case "single-line":
+      case "multiline":
+      case "password":
+      case "email":
+      case "number":
+      case "dropdown":
+        return (
+          <div className="space-y-4">
             <div className="space-y-2">
-              {(localProperties as any).options.map(
-                (option: string, index: number) => (
+              <Label>Label</Label>
+              <Input
+                value={properties.label}
+                onChange={(e) =>
+                  setProperties({
+                    ...properties,
+                    label: e.target.value,
+                  })
+                }
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Placeholder</Label>
+              <Input
+                value={properties.placeholder}
+                onChange={(e) =>
+                  setProperties({
+                    ...properties,
+                    placeholder: e.target.value,
+                  })
+                }
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Width</Label>
+              <Select
+                value={properties.width}
+                onValueChange={(value: "100%" | "75%" | "50%" | "25%") =>
+                  setProperties({
+                    ...properties,
+                    width: value,
+                  })
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="100%">Full width</SelectItem>
+                  <SelectItem value="75%">Three quarters</SelectItem>
+                  <SelectItem value="50%">Half width</SelectItem>
+                  <SelectItem value="25%">Quarter width</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="required"
+                checked={properties.isRequired}
+                onCheckedChange={(checked) =>
+                  setProperties({
+                    ...properties,
+                    isRequired: checked as boolean,
+                  })
+                }
+              />
+              <Label htmlFor="required">Required field</Label>
+            </div>
+          </div>
+        );
+      case "radio":
+      case "checkbox":
+      case "dropdown":
+        return (
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label>Label</Label>
+              <Input
+                value={properties.label}
+                onChange={(e) =>
+                  setProperties({
+                    ...properties,
+                    label: e.target.value,
+                  })
+                }
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Options</Label>
+              <div className="space-y-2">
+                {properties.options?.map((option: string, index: number) => (
                   <div key={index} className="flex items-center space-x-2">
-                    <input
-                      type="text"
+                    <Input
                       value={option}
                       onChange={(e) => {
-                        const newOptions = [
-                          ...(localProperties as any).options,
-                        ];
+                        if (!properties.options) return;
+                        const newOptions = [...properties.options];
                         newOptions[index] = e.target.value;
-                        setLocalProperties({
-                          ...localProperties,
+                        setProperties({
+                          ...properties,
                           options: newOptions,
-                        } as any);
+                        });
                       }}
-                      className="flex-1 px-3 py-2 border border-[#e9eaeb] rounded-md focus:outline-none focus:ring-2 focus:ring-[#e3f6f1] focus:border-[#3e9e86]"
                     />
                     <button
-                      onClick={() => {
-                        const newOptions = (
-                          localProperties as any
-                        ).options.filter((_: string, i: number) => i !== index);
-                        setLocalProperties({
-                          ...localProperties,
+                      onClick={(e) => {
+                        e.preventDefault();
+                        const newOptions = properties?.options?.filter(
+                          (_, i) => i !== index
+                        );
+                        setProperties({
+                          ...properties,
                           options: newOptions,
-                        } as any);
+                        });
                       }}
-                      className="text-[#d92d20] hover:text-[#b42318]"
+                      className="text-destructive hover:text-destructive/80"
                     >
                       <X size={16} />
                     </button>
                   </div>
-                )
-              )}
-              <button
-                onClick={() => {
-                  setLocalProperties({
-                    ...localProperties,
-                    options: [
-                      ...(localProperties as any).options,
-                      `Option ${(localProperties as any).options.length + 1}`,
-                    ],
-                  } as any);
-                }}
-                className="w-full px-3 py-2 text-sm text-[#3e9e86] hover:text-[#2f7765] border border-[#e3f6f1] rounded-md"
+                ))}
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setProperties({
+                      ...properties,
+                      options: [
+                        ...(properties.options || []),
+                        `Option ${(
+                          (properties.options?.length || 0) + 1
+                        ).toString()}`,
+                      ],
+                    });
+                  }}
+                  className="w-full px-3 py-2 text-sm text-primary hover:text-primary/80 border border-input rounded-md"
+                >
+                  Add Option
+                </button>
+              </div>
+            </div>
+
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="required"
+                checked={properties.isRequired}
+                onCheckedChange={(checked) =>
+                  setProperties({
+                    ...properties,
+                    isRequired: checked as boolean,
+                  })
+                }
+              />
+              <Label htmlFor="required">Required field</Label>
+            </div>
+          </div>
+        );
+      case "time-picker":
+        return (
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label>Label</Label>
+              <Input
+                value={properties.label}
+                onChange={(e) =>
+                  setProperties({
+                    ...properties,
+                    label: e.target.value,
+                  })
+                }
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Placeholder</Label>
+              <Input
+                value={properties.placeholder}
+                onChange={(e) =>
+                  setProperties({
+                    ...properties,
+                    placeholder: e.target.value,
+                  })
+                }
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Width</Label>
+              <Select
+                value={properties.width}
+                onValueChange={(value: "100%" | "75%" | "50%" | "25%") =>
+                  setProperties({
+                    ...properties,
+                    width: value,
+                  })
+                }
               >
-                Add Option
-              </button>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="100%">Full width</SelectItem>
+                  <SelectItem value="75%">Three quarters</SelectItem>
+                  <SelectItem value="50%">Half width</SelectItem>
+                  <SelectItem value="25%">Quarter width</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Default Start Time</Label>
+              <div className="flex gap-2">
+                <Select
+                  value={properties.minTime?.hour || ""}
+                  onValueChange={(hour) =>
+                    setProperties({
+                      ...properties,
+                      minTime: {
+                        hour,
+                        minute: properties.minTime?.minute || "00",
+                        period: properties.minTime?.period || "AM",
+                      },
+                    })
+                  }
+                >
+                  <SelectTrigger className="w-[70px]">
+                    <SelectValue placeholder="HH" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Array.from({ length: 12 }, (_, i) =>
+                      (i + 1).toString().padStart(2, "0")
+                    ).map((hour) => (
+                      <SelectItem key={hour} value={hour}>
+                        {hour}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Select
+                  value={properties.minTime?.minute || ""}
+                  onValueChange={(minute) =>
+                    setProperties({
+                      ...properties,
+                      minTime: {
+                        hour: properties.minTime?.hour || "12",
+                        minute,
+                        period: properties.minTime?.period || "AM",
+                      },
+                    })
+                  }
+                >
+                  <SelectTrigger className="w-[70px]">
+                    <SelectValue placeholder="MM" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Array.from({ length: 60 }, (_, i) =>
+                      i.toString().padStart(2, "0")
+                    ).map((minute) => (
+                      <SelectItem key={minute} value={minute}>
+                        {minute}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Select
+                  value={properties.minTime?.period || "AM"}
+                  onValueChange={(period: "AM" | "PM") =>
+                    setProperties({
+                      ...properties,
+                      minTime: {
+                        hour: properties.minTime?.hour || "12",
+                        minute: properties.minTime?.minute || "00",
+                        period,
+                      },
+                    })
+                  }
+                >
+                  <SelectTrigger className="w-[70px]">
+                    <SelectValue placeholder="AM/PM" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="AM">AM</SelectItem>
+                    <SelectItem value="PM">PM</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Default End Time</Label>
+              <div className="flex gap-2">
+                <Select
+                  value={properties.maxTime?.hour || ""}
+                  onValueChange={(hour) =>
+                    setProperties({
+                      ...properties,
+                      maxTime: {
+                        hour,
+                        minute: properties.maxTime?.minute || "00",
+                        period: properties.maxTime?.period || "PM",
+                      },
+                    })
+                  }
+                >
+                  <SelectTrigger className="w-[70px]">
+                    <SelectValue placeholder="HH" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Array.from({ length: 12 }, (_, i) =>
+                      (i + 1).toString().padStart(2, "0")
+                    ).map((hour) => (
+                      <SelectItem key={hour} value={hour}>
+                        {hour}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Select
+                  value={properties.maxTime?.minute || ""}
+                  onValueChange={(minute) =>
+                    setProperties({
+                      ...properties,
+                      maxTime: {
+                        hour: properties.maxTime?.hour || "12",
+                        minute,
+                        period: properties.maxTime?.period || "PM",
+                      },
+                    })
+                  }
+                >
+                  <SelectTrigger className="w-[70px]">
+                    <SelectValue placeholder="MM" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Array.from({ length: 60 }, (_, i) =>
+                      i.toString().padStart(2, "0")
+                    ).map((minute) => (
+                      <SelectItem key={minute} value={minute}>
+                        {minute}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Select
+                  value={properties.maxTime?.period || "PM"}
+                  onValueChange={(period: "AM" | "PM") =>
+                    setProperties({
+                      ...properties,
+                      maxTime: {
+                        hour: properties.maxTime?.hour || "12",
+                        minute: properties.maxTime?.minute || "00",
+                        period,
+                      },
+                    })
+                  }
+                >
+                  <SelectTrigger className="w-[70px]">
+                    <SelectValue placeholder="AM/PM" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="AM">AM</SelectItem>
+                    <SelectItem value="PM">PM</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="required"
+                checked={properties.isRequired}
+                onCheckedChange={(checked) =>
+                  setProperties({
+                    ...properties,
+                    isRequired: checked as boolean,
+                  })
+                }
+              />
+              <Label htmlFor="required">Required field</Label>
             </div>
           </div>
-        )}
+        );
+      case "date-picker":
+        return (
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label>Label</Label>
+              <Input
+                value={properties.label}
+                onChange={(e) =>
+                  setProperties({
+                    ...properties,
+                    label: e.target.value,
+                  })
+                }
+              />
+            </div>
 
-        <div className="space-y-1">
-          <label className="block text-sm font-medium text-[#344054]">
-            Width
-          </label>
-          <div className="relative">
-            <select
-              name="width"
-              value={localProperties.width}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border border-[#e9eaeb] rounded-md focus:outline-none focus:ring-2 focus:ring-[#e3f6f1] focus:border-[#3e9e86] appearance-none pr-10"
-            >
-              <option value="100%">Full width</option>
-              <option value="75%">75%</option>
-              <option value="50%">50%</option>
-              <option value="25%">25%</option>
-            </select>
-            <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-              <ChevronDown className="h-4 w-4 text-[#98a2b3]" />
+            <div className="space-y-2">
+              <Label>Placeholder</Label>
+              <Input
+                value={properties.placeholder}
+                onChange={(e) =>
+                  setProperties({
+                    ...properties,
+                    placeholder: e.target.value,
+                  })
+                }
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Width</Label>
+              <Select
+                value={properties.width}
+                onValueChange={(value: "100%" | "75%" | "50%" | "25%") =>
+                  setProperties({
+                    ...properties,
+                    width: value,
+                  })
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="100%">Full width</SelectItem>
+                  <SelectItem value="75%">Three quarters</SelectItem>
+                  <SelectItem value="50%">Half width</SelectItem>
+                  <SelectItem value="25%">Quarter width</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="required"
+                checked={properties.isRequired}
+                onCheckedChange={(checked) =>
+                  setProperties({
+                    ...properties,
+                    isRequired: checked as boolean,
+                  })
+                }
+              />
+              <Label htmlFor="required">Required field</Label>
             </div>
           </div>
-        </div>
-
-        <div className="flex items-center">
-          <input
-            type="checkbox"
-            name="isRequired"
-            checked={localProperties.isRequired}
-            onChange={handleChange}
-            className="h-4 w-4 text-[#3e9e86] focus:ring-[#e3f6f1] border-[#e9eaeb] rounded"
-            id="required-field"
-          />
-          <label
-            htmlFor="required-field"
-            className="ml-2 block text-sm text-[#344054]"
-          >
-            Make this field required
-          </label>
-        </div>
-      </div>
-    );
+        );
+      default:
+        return null;
+    }
   };
 
   return (
-    <div className="w-full border-l border-[#e9eaeb] bg-white">
-      <div className="p-4 border-b border-[#e9eaeb] flex items-center justify-between">
-        <span className="font-medium text-[#181d27]">Properties</span>
+    <div className="w-full border-l border-border bg-background">
+      <div className="p-4 border-b border-border flex items-center justify-between">
+        <span className="font-medium text-foreground">Properties</span>
         <button
           onClick={handleCancel}
-          className="text-[#98a2b3] hover:text-[#344054]"
+          className="text-muted-foreground hover:text-foreground"
         >
           <X size={16} />
         </button>
       </div>
       <div className="p-4 overflow-y-auto">
-        {renderPropertiesForm()}
-        <div className="pt-4 mt-4 border-t border-[#e9eaeb] flex justify-end space-x-2">
+        {renderProperties()}
+        <div className="pt-4 mt-4 border-t border-border flex justify-end space-x-2">
           <button
             onClick={handleCancel}
-            className="px-3 py-2 text-sm font-medium text-[#344054] bg-white border border-[#e9eaeb] rounded-md hover:bg-[#fafafa]"
+            className="px-3 py-2 text-sm font-medium text-foreground bg-background border border-input rounded-md hover:bg-muted"
           >
             Cancel
           </button>
           <button
             onClick={handleSave}
-            className="px-3 py-2 text-sm font-medium text-white bg-[#3e9e86] rounded-md hover:bg-[#2f7765]"
+            className="px-3 py-2 text-sm font-medium text-primary-foreground bg-primary rounded-md hover:bg-primary/90"
           >
             Save
           </button>
